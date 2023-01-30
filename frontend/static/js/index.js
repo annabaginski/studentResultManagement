@@ -249,7 +249,6 @@ const router = async () => {
 
             for (let i = 0; i < data.length; i++){
                 let studentName = data[i].firstN + ' ' + data[i].familyN;
-                console.log(studentName)
             
                 document.getElementById('studentOption').innerHTML +=
                 "<option>" + studentName + "</option>" ;
