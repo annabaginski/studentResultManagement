@@ -36,6 +36,10 @@ app.get("/courses", (req, res) => {
     res.sendFile(path.resolve(__dirname, "frontend", "index.html"));
 });
 
+app.get("/results", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "index.html"));
+});
+
 //Create API to fetch data from database to client side js and post it vice versa
 app.get("/studentdata", (req, res) => {
     db.collection('students').find().toArray()
@@ -53,6 +57,15 @@ app.get("/coursedata", (req, res) => {
     })
     })
 
+app.get("/resultsdata", (req, res) => {
+    db.collection('results').find().toArray()
+    .then( data => {
+        //console.log(data)
+        return res.json(data)
+    })
+    })
+    
+
 app.post('/poststudent', (req, res) => {
         //console.log(req.body);
 
@@ -69,6 +82,16 @@ app.post('/postcourse', (req, res) => {
         db.collection('courses').insertOne(req.body, (err, result) => {
             if (err) return console.log(err);
             console.log('new course saved to database')
+            res.json(result);
+            });
+        });
+
+app.post('/postresults', (req, res) => {
+        //console.log(req.body);
+        
+        db.collection('results').insertOne(req.body, (err, result) => {
+            if (err) return console.log(err);
+            console.log('new results saved to database')
             res.json(result);
             });
         });
