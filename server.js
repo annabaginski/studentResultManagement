@@ -37,10 +37,18 @@ app.get("/courses", (req, res) => {
 });
 
 //Create API to fetch data from database to client side js and post it vice versa
-app.get("/data", (req, res) => {
+app.get("/studentdata", (req, res) => {
     db.collection('students').find().toArray()
     .then( data => {
         console.log(data)
+        return res.json(data)
+    })
+    })
+
+app.get("/coursedata", (req, res) => {
+    db.collection('courses').find().toArray()
+    .then( data => {
+         console.log(data)
         return res.json(data)
     })
     })
@@ -54,6 +62,17 @@ app.post('/poststudent', (req, res) => {
            res.json(result);
            });
         });
+
+app.post('/postcourse', (req, res) => {
+        console.log('this is your post course for fetch', req.body); // this console.log returns empty object : {}
+    
+        db.collection('courses').insertOne(req.body, (err, result) => {
+            if (err) return console.log(err);
+            console.log('new course saved to database')
+            res.json(result);
+            });
+        });
+    
 
 //Run server on a port
 app.listen(process.env.PORT || 3000, () => 

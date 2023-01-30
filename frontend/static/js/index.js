@@ -74,7 +74,7 @@ const router = async () => {
     //Working within students view
     if (match.route.path === '/students'){
 
-        fetch("http://localhost:3000/data")
+        fetch("http://localhost:3000/studentdata")
         .then(res => res.json())
         .then(data => {
             console.log(data.length)
@@ -162,6 +162,75 @@ const router = async () => {
 
             setTimeout( () => {
             document.getElementById('studentform').reset();
+            }, 1000);
+        }
+        })
+
+
+    }
+
+    if (match.route.path === '/courses'){
+
+        fetch("http://localhost:3000/coursedata")
+        .then(res => res.json())
+        .then(data => {
+            console.log(data.length)
+            console.log(data)
+
+            document.getElementById('courseList').innerHTML +=
+            "<tr>" +
+            "<th>Course Name</th>" +
+            "</tr>" 
+            
+            for (let i = 0; i < data.length; i++){
+                let courseName = data[i].courseName;
+            
+            document.getElementById('courseList').innerHTML +=
+            "<tr>" +
+            "<td>" + courseName + "</td>" +
+            "</tr>" ;
+
+            }
+            
+        })
+        .catch(err => {
+            console.log('Error', err)
+        });
+
+        console.log("RESET");
+        console.log(document.getElementById('courseform'))
+        document.getElementById('courseformbtn').addEventListener("click", (e) => {
+            //Pull values from form
+            let courseName = document.getElementById('courseName').value;
+
+            if (courseName === ""){
+                e.preventDefault();
+                alert("Please make sure all fields are filled out.")
+            } else {
+
+            e.preventDefault();
+            alert('Course added!');
+
+            document.getElementById('courseList').innerHTML +=
+            "<tr>" +
+            "<td>" + courseName + "</td>" +
+            "</tr>" ;
+
+            console.log('time to post fetch');
+
+            fetch('/postcourse', {
+                method: 'POST',
+                body: JSON.stringify({
+                    courseName
+                }),
+                headers: { 
+                    'Accept': 'application/json, text/plain',
+                'Content-Type': 'application/json'}
+            }).then( res => res.json())
+            .then( res => console.log(res))
+            
+            setTimeout( () => {
+            document.getElementById('courseform').reset();
             }, 1000);
         }
         })

@@ -8,8 +8,51 @@ export default class extends AbstractView {
 
     async getHtml() {
         return `
-            <h1>Courses</h1>
-            <p>You are viewing the courses!</p>
+        <section class="container">
+        <h1>Courses</h1>
+        <section class="jumbotron">
+            <h3>Add New Course:</h3>
+            <form id="courseform">
+                <div class="form-group py-2">
+                    <label for="courseName">Course Name</label>
+                    <input type="text" class="form-control" name="courseName" id="courseName" placeholder="Insert course name" required>
+                </div>
+                <button id="courseformbtn" type="submit" class="btn btn-primary my-2">Add a new course</button>
+            </form>
+        </section>
+        <section class="row mt-5">
+            <div class="col-lg-12">
+            <table class="table" id="courseList">
+
+            </table>
+            </div>
+        </section>
+    </section>
+
+            
+            
         `;
     }
+
 }
+
+
+{/* <h1>Students</h1>
+<p>You are viewing the students!</p>
+
+<form id="studentform" action="/students" method="POST">
+    <label for="firstName">First Name:</label>
+    <input type="text" name="firstName" id="firstName" required>
+
+    <label for="familyName">Family Name:</label>
+    <input type="text" name="familyName" id="familyName" required>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" name="dob" id="dob" required>
+
+    <button id="studentformbtn" type="submit">Submit</button>
+</form>
+
+<table id="studentList">
+
+</table> */}
