@@ -43,24 +43,3 @@ export default class extends AbstractView {
     }
 
 }
-
-
-{/* <h1>Students</h1>
-<p>You are viewing the students!</p>
-
-<form id="studentform" action="/students" method="POST">
-    <label for="firstName">First Name:</label>
-    <input type="text" name="firstName" id="firstName" required>
-
-    <label for="familyName">Family Name:</label>
-    <input type="text" name="familyName" id="familyName" required>
-
-    <label for="dob">Date of Birth:</label>
-    <input type="date" name="dob" id="dob" required>
-
-    <button id="studentformbtn" type="submit">Submit</button>
-</form>
-
-<table id="studentList">
-
-</table> */}

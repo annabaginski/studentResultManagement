@@ -5,40 +5,12 @@ import Students from "./views/Students.js";
 import Courses from "./views/Courses.js";
 
 //Use history api to prevent page reload for SPA
-
 const navigateTo = url => {
     history.pushState(null, null, url);
     router();
 };
 
-function checkAge() {
-    let date = new Date();
-    let dd = date.getDate();
-    let mm = date.getMonth() + 1;
-    let yyyy = date.getFullYear();
-
-    //Add a zero if one Digit (eg: 05,09)
-    if (dd < 10) {
-        dd = "0" + dd;
-    }
-
-    //Add a zero if one Digit (eg: 05,09)
-    if (mm < 10) {
-        mm = "0" + mm;
-    }
-
-    // let minYear = yyyy - 80; //Calculate Minimun Age (<80)
-    let minYear = yyyy - 10; //Calculate Maximum Age (>18)
-
-    let min = minYear + "-" + mm + "-" + dd;
-    let max = maxYear + "-" + mm + "-" + dd;
-
-    return min;
-
-    // document.getElementById("dob").setAttribute("min", min);
-    // document.getElementById("dob").setAttribute("max", max);
-};
-
+//Router to set views and work within each view
 const router = async () => {
     const routes = [
         { path: "/", view: Home },
@@ -56,9 +28,7 @@ const router = async () => {
 
     let match = potentialMatches.find(potentialMatch => potentialMatch.isMatch);
     
-    console.log('this is match', match, match.route.path)
     //If no match found, return user to homepage
-
     if (!match) {
         match = {
             route: routes[0],
@@ -67,7 +37,6 @@ const router = async () => {
     }
 
     //Create new instance of view and put into app element
-
     const view = new match.route.view();
     document.querySelector("#app").innerHTML = await view.getHtml();
 
@@ -77,8 +46,6 @@ const router = async () => {
         fetch("http://localhost:3000/studentdata")
         .then(res => res.json())
         .then(data => {
-            console.log(data.length)
-            console.log(data)
 
             document.getElementById('studentList').innerHTML +=
             "<tr>" +
@@ -98,17 +65,12 @@ const router = async () => {
             "<td>" + familyN + "</td>" +
             "<td>" + dob + "</td>" +
             "</tr>" ;
-
             }
-            
-
         })
         .catch(err => {
             console.log('Error', err)
         });
 
-        console.log("RESET");
-        console.log(document.getElementById('studentform'))
         document.getElementById('studentformbtn').addEventListener("click", (e) => {
             //Pull values from form
             let firstN = document.getElementById('firstName').value;
@@ -122,18 +84,15 @@ const router = async () => {
             let yyyy = today.getFullYear() - 10;
             
             today = yyyy + '-' + mm + '-' + dd;
-
             let studentAge = document.getElementById('dob').value;
-
-            console.log(document.getElementById('dob').value < today)
 
             if (studentAge > today){
                 e.preventDefault();
                 alert("Student must be 10 years of age or older.")
             } else if (firstN === "" || familyN === ""){
+                e.preventDefault();
                 alert("Please make sure all fields are filled out.")
             } else {
-
             e.preventDefault();
             alert('Student added!');
 
@@ -144,8 +103,7 @@ const router = async () => {
             "<td>" + dob + "</td>" +
             "</tr>" ;
 
-            console.log('time to post fetch');
-
+            //Fetch to post student data to db
             fetch('/poststudent', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -159,14 +117,12 @@ const router = async () => {
             }).then( res => res.json())
             .then( res => console.log(res))
             
-
+            //Timeout to allow for submission to db
             setTimeout( () => {
             document.getElementById('studentform').reset();
             }, 1000);
         }
         })
-
-
     }
 
     if (match.route.path === '/courses'){
@@ -174,8 +130,6 @@ const router = async () => {
         fetch("http://localhost:3000/coursedata")
         .then(res => res.json())
         .then(data => {
-            console.log(data.length)
-            console.log(data)
 
             document.getElementById('courseList').innerHTML +=
             "<tr>" +
@@ -189,16 +143,12 @@ const router = async () => {
             "<tr>" +
             "<td>" + courseName + "</td>" +
             "</tr>" ;
-
             }
-            
         })
         .catch(err => {
             console.log('Error', err)
         });
 
-        console.log("RESET");
-        console.log(document.getElementById('courseform'))
         document.getElementById('courseformbtn').addEventListener("click", (e) => {
             //Pull values from form
             let courseName = document.getElementById('courseName').value;
@@ -216,8 +166,7 @@ const router = async () => {
             "<td>" + courseName + "</td>" +
             "</tr>" ;
 
-            console.log('time to post fetch');
-
+            //Fetch to post new course data to db
             fetch('/postcourse', {
                 method: 'POST',
                 body: JSON.stringify({
@@ -234,10 +183,7 @@ const router = async () => {
             }, 1000);
         }
         })
-
-
     }
-
 };
 
 //Event listener to listen for user clicking back and forward arrows
