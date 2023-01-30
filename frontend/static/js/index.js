@@ -3,6 +3,7 @@
 import Home from "./views/Home.js";
 import Students from "./views/Students.js";
 import Courses from "./views/Courses.js";
+import Results from "./views/Results.js";
 
 //Use history api to prevent page reload for SPA
 const navigateTo = url => {
@@ -15,7 +16,8 @@ const router = async () => {
     const routes = [
         { path: "/", view: Home },
         { path: "/students", view: Students },
-        { path: "/courses", view: Courses }
+        { path: "/courses", view: Courses },
+        { path: "/results", view: Results}
     ];
 
     // Test each route for potential match
@@ -125,6 +127,7 @@ const router = async () => {
         })
     }
 
+    //Working within courses view
     if (match.route.path === '/courses'){
 
         fetch("http://localhost:3000/coursedata")
@@ -180,6 +183,118 @@ const router = async () => {
             
             setTimeout( () => {
             document.getElementById('courseform').reset();
+            }, 1000);
+        }
+        })
+    }
+
+    //Working within results view
+    if (match.route.path === '/results'){
+
+        document.getElementById('resultsList').innerHTML +=
+        "<tr>" +
+        "<th>Course</th>" +
+        "<th>Student</th>" +
+        "<th>Score</th>" +
+        "</tr>" ;
+
+        //Fetch data to populate list at bottom
+        fetch("http://localhost:3000/resultsdata")
+        .then(res => res.json())
+        .then(data => {
+            
+            for (let i = 0; i < data.length; i++){
+                let course = data[i].course;
+                let student = data[i].student;
+                let score = data[i].score;
+            
+            document.getElementById('resultsList').innerHTML +=
+            "<tr>" +
+            "<td>" + course + "</td>" +
+            "<td>" + student + "</td>" +
+            "<td>" + score + "</td>" +
+            "</tr>" ;
+            }
+        })
+        .catch(err => {
+            console.log('Error', err)
+        });
+
+        //Fetch data to populate course options
+        fetch("http://localhost:3000/coursedata")
+        .then(res => res.json())
+        .then(data => {
+            
+            document.getElementById('courseOption').innerHTML +=
+                "<option value=''> Choose a course </option>" ;
+
+            for (let i = 0; i < data.length; i++){
+                let courseName = data[i].courseName;
+            
+                document.getElementById('courseOption').innerHTML +=
+                "<option>" + courseName + "</option>" ;
+            }
+        })
+        .catch(err => {
+            console.log('Error', err)
+        });
+
+        //Fetch data to populate student options
+        fetch("http://localhost:3000/studentdata")
+        .then(res => res.json())
+        .then(data => {
+            
+            document.getElementById('studentOption').innerHTML +=
+                "<option value=''> Choose a student </option>" ;
+
+            for (let i = 0; i < data.length; i++){
+                let studentName = data[i].firstN + ' ' + data[i].familyN;
+                console.log(studentName)
+            
+                document.getElementById('studentOption').innerHTML +=
+                "<option>" + studentName + "</option>" ;
+            }
+        })
+        .catch(err => {
+            console.log('Error', err)
+        });
+
+        document.getElementById('resultsformbtn').addEventListener("click", (e) => {
+            //Pull values from form
+            let course = document.getElementById('courseOption').value;
+            let student = document.getElementById('studentOption').value;
+            let score = document.getElementById('courseGrade').value
+
+            if (course === "" || student === "" || score === ""){
+                e.preventDefault();
+                alert("Please pick an option for every field.")
+            } else {
+            e.preventDefault();
+            alert('Results added!');
+
+            document.getElementById('resultsList').innerHTML +=
+            "<tr>" +
+            "<td>" + course + "</td>" +
+            "<td>" + student + "</td>" +
+            "<td>" + score + "</td>" +
+            "</tr>" ;
+
+            //Fetch to post new results to db
+            fetch('/postresults', {
+                method: 'POST',
+                body: JSON.stringify({
+                    course,
+                    student,
+                    score
+                }),
+                headers: { 
+                    'Accept': 'application/json, text/plain',
+                'Content-Type': 'application/json'}
+            }).then( res => res.json())
+            .then( res => console.log(res))
+            
+            setTimeout( () => {
+            document.getElementById('resultsform').reset();
             }, 1000);
         }
         })
